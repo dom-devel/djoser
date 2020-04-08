@@ -26,8 +26,8 @@ class UserSerializer(serializers.ModelSerializer):
         if settings.SEND_ACTIVATION_EMAIL and email_field in validated_data:
             instance_email = get_user_email(instance)
             if instance_email != validated_data[email_field]:
-                instance.is_active = False
-                instance.save(update_fields=["is_active"])
+                instance.is_validated = False
+                instance.save(update_fields=["is_validated"])
         return super().update(instance, validated_data)
 
 
@@ -72,8 +72,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             user = User.objects.create_user(**validated_data)
             if settings.SEND_ACTIVATION_EMAIL:
-                user.is_active = False
-                user.save(update_fields=["is_active"])
+                user.is_validated = False
+                user.save(update_fields=["is_validated"])
         return user
 
 
@@ -136,8 +136,8 @@ class UserFunctionsMixin:
         except User.DoesNotExist:
             pass
         if (
-                settings.PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND
-                or settings.USERNAME_RESET_SHOW_EMAIL_NOT_FOUND
+            settings.PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND
+            or settings.USERNAME_RESET_SHOW_EMAIL_NOT_FOUND
         ):
             self.fail("email_not_found")
 
@@ -196,7 +196,7 @@ class ActivationSerializer(UidAndTokenSerializer):
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        if not self.user.is_active:
+        if not self.user.is_validated:
             return attrs
         raise exceptions.PermissionDenied(self.error_messages["stale_token"])
 
@@ -330,7 +330,7 @@ class UserDeleteSerializer(CurrentPasswordSerializer):
 class SetUsernameSerializer(UsernameSerializer, CurrentPasswordSerializer):
     class Meta:
         model = User
-        fields = (settings.LOGIN_FIELD, 'current_password')
+        fields = (settings.LOGIN_FIELD, "current_password")
 
 
 class SetUsernameRetypeSerializer(SetUsernameSerializer, UsernameRetypeSerializer):
