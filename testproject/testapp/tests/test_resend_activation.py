@@ -18,7 +18,7 @@ class TestResendActivationEmail(
 
     @override_settings(DJOSER=dict(settings.DJOSER, **{"SEND_ACTIVATION_EMAIL": True}))
     def test_resend_activation_view(self):
-        user = create_user(is_active=False)
+        user = create_user(is_validated=False)
         data = {"email": user.email}
         response = self.client.post(self.base_url, data)
 
@@ -27,7 +27,7 @@ class TestResendActivationEmail(
 
     @override_settings(DJOSER=dict(settings.DJOSER, **{"SEND_ACTIVATION_EMAIL": False}))
     def test_dont_resend_activation_when_disabled(self):
-        user = create_user(is_active=False)
+        user = create_user(is_validated=False)
         data = {"email": user.email}
         response = self.client.post(self.base_url, data)
 
@@ -36,7 +36,7 @@ class TestResendActivationEmail(
 
     @override_settings(DJOSER=dict(settings.DJOSER, **{"SEND_ACTIVATION_EMAIL": True}))
     def test_dont_resend_activation_when_active(self):
-        user = create_user(is_active=True)
+        user = create_user(is_validated=True)
         data = {"email": user.email}
         response = self.client.post(self.base_url, data)
 
@@ -45,7 +45,7 @@ class TestResendActivationEmail(
 
     @override_settings(DJOSER=dict(settings.DJOSER, **{"SEND_ACTIVATION_EMAIL": True}))
     def test_dont_resend_activation_when_no_password(self):
-        user = create_user(is_active=False, password=None)
+        user = create_user(is_validated=False, password=None)
         data = {"email": user.email}
         response = self.client.post(self.base_url, data)
 
@@ -59,7 +59,7 @@ class TestResendActivationEmail(
         DJOSER=dict(settings.DJOSER, **{"SEND_ACTIVATION_EMAIL": True}),
     )
     def test_resend_activation_view_custom_user(self):
-        user = create_user(use_custom_data=True, is_active=False)
+        user = create_user(use_custom_data=True, is_validated=False)
         data = {"custom_email": get_user_email(user)}
         response = self.client.post(self.base_url, data)
 

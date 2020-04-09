@@ -103,7 +103,7 @@ class SetUsernameViewTest(
         response = self.client.post(self.base_url, data)
 
         self.assert_status_equal(response, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue(user.is_active)
+        self.assertTrue(user.is_validated)
 
     @mock.patch("djoser.serializers.User", CustomUser)
     @mock.patch("djoser.serializers.SetUsernameSerializer.Meta.model", CustomUser)

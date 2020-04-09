@@ -25,7 +25,7 @@ class ActivationViewTest(
 
     def test_post_activate_user_and_not_login(self):
         user = create_user()
-        user.is_active = False
+        user.is_validated = False
         user.save()
         data = {
             "uid": djoser.utils.encode_uid(user.pk),
@@ -36,7 +36,7 @@ class ActivationViewTest(
         user.refresh_from_db()
 
         self.assert_status_equal(response, status.HTTP_204_NO_CONTENT)
-        self.assertTrue(user.is_active)
+        self.assertTrue(user.is_validated)
 
     def test_post_respond_with_bad_request_when_wrong_uid(self):
         user = create_user()
@@ -89,7 +89,7 @@ class ActivationViewTest(
     )
     def test_post_sent_confirmation_email(self):
         user = create_user()
-        user.is_active = False
+        user.is_validated = False
         user.save()
         djoser.signals.user_activated.connect(self.signal_receiver)
         data = {

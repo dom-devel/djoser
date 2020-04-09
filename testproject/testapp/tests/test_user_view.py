@@ -39,7 +39,7 @@ class UserViewTest(
         self.assert_status_equal(response, status.HTTP_200_OK)
         self.user.refresh_from_db()
         self.assertEqual(data["email"], self.user.email)
-        self.assertTrue(self.user.is_active)
+        self.assertTrue(self.user.is_validated)
 
     @override_settings(DJOSER=dict(settings.DJOSER, **{"SEND_ACTIVATION_EMAIL": True}))
     def test_email_change_with_send_activation_email_true(self):
@@ -51,7 +51,7 @@ class UserViewTest(
         self.assert_status_equal(response, status.HTTP_200_OK)
         self.user.refresh_from_db()
         self.assertEqual(data["email"], self.user.email)
-        self.assertFalse(self.user.is_active)
+        self.assertFalse(self.user.is_validated)
         self.assert_emails_in_mailbox(1)
         self.assert_email_exists(to=[data["email"]])
 

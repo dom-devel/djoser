@@ -45,7 +45,7 @@ class UserCreateViewTest(
         self.assert_email_exists(to=[data["email"]])
 
         user = User.objects.get(username="john")
-        self.assertFalse(user.is_active)
+        self.assertFalse(user.is_validated)
 
     @override_settings(
         DJOSER=dict(
@@ -63,7 +63,7 @@ class UserCreateViewTest(
         self.assert_email_exists(to=[data["email"]])
 
         user = User.objects.get(username="john")
-        self.assertTrue(user.is_active)
+        self.assertTrue(user.is_validated)
 
     def test_post_not_create_new_user_if_username_exists(self):
         create_user(username="john")

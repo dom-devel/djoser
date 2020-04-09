@@ -45,7 +45,7 @@ class TokenCreateViewTest(
         """
         user = create_user()
         data = {"username": user.username, "password": user.raw_password}
-        user.is_active = False
+        user.is_validated = False
         user.save()
         user_logged_in.connect(self.signal_receiver)
 

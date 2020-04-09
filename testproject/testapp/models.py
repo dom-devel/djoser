@@ -24,6 +24,7 @@ class CustomUser(AbstractBaseUser):
     custom_email = models.EmailField(blank=True)
     custom_required_field = models.CharField(max_length=2)
     is_active = models.BooleanField(default=True)
+    is_validated = models.BooleanField(default=False)
     objects = CustomUserManager()
 
     EMAIL_FIELD = "custom_email"
@@ -46,6 +47,7 @@ class ExampleUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
+    is_validated = models.BooleanField(default=False)
 
     objects = ExampleUserManager()
 
