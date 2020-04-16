@@ -199,7 +199,11 @@ class UserViewSet(viewsets.ModelViewSet):
     def resend_activation(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.get_user(is_validated=False)
+        user = serializer.get_user(is_active=True)
+
+        # If user is already active return an error.
+        if user.is_validated:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if not settings.SEND_ACTIVATION_EMAIL or not user:
             return Response(status=status.HTTP_400_BAD_REQUEST)
