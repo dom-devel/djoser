@@ -72,6 +72,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             user = User.objects.create_user(**validated_data)
             if settings.SEND_ACTIVATION_EMAIL:
+                # NBED Here we need to generate and save an activation token
                 user.is_validated = False
                 user.save(update_fields=["is_validated"])
         return user
@@ -177,6 +178,9 @@ class UidAndTokenSerializer(serializers.Serializer):
                 {"uid": [self.error_messages[key_error]]}, code=key_error
             )
 
+        # NBED This needs to change. Rather than re-generating the new
+        # token we instead need to check the token which is already
+        # on the user account.
         is_token_valid = self.context["view"].token_generator.check_token(
             self.user, self.initial_data.get("token", "")
         )
@@ -195,6 +199,7 @@ class ActivationSerializer(UidAndTokenSerializer):
     }
 
     def validate(self, attrs):
+        # Leave initial check in place
         attrs = super().validate(attrs)
         if not self.user.is_validated:
             return attrs

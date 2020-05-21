@@ -140,7 +140,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         context = {"user": user}
         to = [get_user_email(user)]
-        if settings.SEND_ACTIVATION_EMAIL:
+        if settings.SEND_ACTIVATION_EMAIL_ON_CREATE:
             settings.EMAIL.activation(self.request, context).send(to)
         elif settings.SEND_CONFIRMATION_EMAIL:
             settings.EMAIL.confirmation(self.request, context).send(to)
